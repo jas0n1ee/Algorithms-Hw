@@ -1,10 +1,15 @@
 #include<stdio.h>
-struct matrix
+struct CrosLNode
 {
-	struct *head;
-	int x;
-	int y;
-	double value;
-	struct *tail;
+	int row,col;
+	double val;
+	CrosLnode *down, *right;
 };
+struct CNode
+{
+	int row,col;
+	CNode *next;
+	CrosLNode *down, *right;
+};
+
 
