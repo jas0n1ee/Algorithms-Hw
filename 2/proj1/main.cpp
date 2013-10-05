@@ -4,7 +4,7 @@ using namespace std;
 struct CrosLNode
 {
 	int row,col;
-	double val;
+	int val;
 	CrosLNode *down, *right;
 };
 struct CNode
@@ -48,114 +48,227 @@ void print_matrix(CNode *t)
 		}
 	}
 }
-void build_list(CNode *t,CrosLNode *x,int m)
+void build_list(CNode *t,CrosLNode &x)
 {
 	int N=t[0].col;
-	for(int i=0;i<m;i++)
+	int row=x.row,col=x.col;
+	if(t[row+1].right==NULL) 
 	{
-		int row=x[i].row,col=x[i].col;
-		if(t[row+1].right==NULL) 
-		{
-			t[row+1].right=&x[i];
-			x[i].right=NULL;
-		}
-		else 
-		{
-			CrosLNode *point=t[row+1].right;
-			if((*point).col>col) 
-			{
-				x[i].right=point;
-				t[row+1].right=&x[i];
-			}
-			else
-				do
-				{
-					if((*(*point).right).col>col)  
-					{
-						x[i].right=(*point).right;
-						(*point).right=&x[i];
-						break;
-					}
-					if((*point).right==NULL&&col>(*point).col) 
-					{
-						(*point).right=&x[i];
-						x[i].right=NULL;
-						break;
-					}
-					point=(*point).right;
-				}while((*point).right!=NULL);
-		}
-				
+		t[row+1].right=&x;
+		x.right=NULL;
 	}
-	for(int i=0;i<m;i++)
+	else 
 	{
-		int row=x[i].row,col=x[i].col;
-		if(t[col+1].down==NULL) 
+		CrosLNode *point=t[row+1].right;
+		if((*point).col>col) 
 		{
-			t[col+1].down=&x[i];
-			x[i].down=NULL;
+			x.right=point;
+			t[row+1].right=&x;
 		}
-		else 
-		{
-			CrosLNode *point=t[col+1].down;
-			if((*point).row>row) 
+		else
+			do
 			{
-				x[i].down=point;
-				t[col+1].down=&x[i];
-			}
-			else
-				do
+				if((*point).right==NULL) 
 				{
-					if((*(*point).down).row>row)  
-					{
-						x[i].down=(*point).down;
-						(*point).down=&x[i];
-						break;
-					}
-					if((*point).down==NULL&&row>(*point).row) 
-					{
-						(*point).down=&x[i];
-						x[i].down=NULL;
-						break;
-					}
-					point=(*point).down;
-				}while((*point).down!=NULL);
+					(*point).right=&x;
+					x.right=NULL;
+					break;
+				}
+				else if((*(*point).right).col>col)  
+				{
+					x.right=(*point).right;
+					(*point).right=&x;
+					break;
+				}
+				point=(*point).right;
+			}while((*point).right!=NULL);
+	}
+	if(t[col+1].down==NULL) 
+	{
+		t[col+1].down=&x;
+		x.down=NULL;
+	}
+	else 
+	{
+		CrosLNode *point=t[col+1].down;
+		if((*point).row>row) 
+		{
+			x.down=point;
+			t[col+1].down=&x;
 		}
-				
+		else
+			do
+			{
+				if((*point).down==NULL) 
+				{
+					(*point).down=&x;
+					x.down=NULL;
+					break;
+				}
+				else if((*(*point).down).row>row)  
+				{
+					x.down=(*point).down;
+					(*point).down=&x;
+					break;
+				}
+				point=(*point).down;
+			}while((*point).down!=NULL);
+	}
+}
+CrosLNode * new_matrix(int row,int col,int val)
+{
+	CrosLNode *t=new CrosLNode;
+	(*t).row=row;
+	(*t).col=col;
+	(*t).val=val;
+	(*t).right=NULL;
+	(*t).down=NULL;
+	return t;
+}
+void delete_list(CNode *head)
+{
+	if((*head).right==NULL) return;
+	else 
+	{
+		(*head).right=((*(*head).right)).right;
+		delete (*head).right;
+	}
+	delete_list(head);
+}
+void delete_matrix(CNode *head)
+{
+	int N=head[0].col;
+	CrosLNode *t=NULL;
+	CrosLNode *d=NULL;
+	for(int i=1;i<N+1;i++)
+	{
+		t=head[i].right;
+		/*
+		while(t!=NULL)
+		{
+			d=t;
+			t=(*t).right;
+			(*d).right=NULL;
+			(*d).down=NULL;
+			delete d;
+		}
+		head[i].right=NULL;
+		*/
+		delete_list(head);
+	}
+	for(int i=1;i<N+1;i++) head[i].down=NULL;
+}
+void matrix_transpose(CNode *s,CNode *d)
+{
+	int N=s[0].col;
+	CrosLNode *point=NULL;
+	for(int i=1;i<N+1;i++) 
+	{
+		point=s[i].right;
+		while(point!=NULL)
+		{
+			build_list(d,*new_matrix((*point).col,(*point).row,(*point).val));
+			point=(*point).right;
+		}
+	}
+}
+void matrix_add(CNode *A, CNode *B, CNode *C)
+{
+	int N=A[0].col;
+	for(int i=1;i<N+1;i++)
+	{
+		int *t=new int[N];
+		for(int j=0;j<N;j++) t[j]=0;
+		CrosLNode *point=A[i].right;
+		while(point!=NULL)
+		{
+			t[(*point).col]+=(*point).val;
+			point=(*point).right;
+		}
+		point=B[i].right;
+		while(point!=NULL)
+		{
+			t[(*point).col]+=(*point).val;
+			point=(*point).right;
+		}	
+		for(int j=0;j<N;j++)
+		{
+			if(t[j]!=0) build_list(C,*new_matrix(i-1,j,t[j]));
+		}
+		delete []t;
+	}
+}
+void matrix_dot(CNode *A,CNode*B,CNode *C)
+{
+	int N=A[0].col;
+	for(int i=1;i<N+1;i++)
+	{
+		for(int j=1;j<N+1;j++)
+		{
+			int t=0;
+			CrosLNode *row=A[i].right;
+			CrosLNode *col=B[j].down;
+			while(row!=NULL)
+			{
+				while(col!=NULL)
+				{
+					if ((*row).col==(*col).row)
+					{
+						t+=(*row).val*(*col).val;
+						break;
+					}
+					else col=(*col).down;
+				}
+				row=(*row).right;
+				col=B[j].down;
+			}
+			if(t!=0) build_list(C,*new_matrix(i-1,j-1,t));
+		}
 	}
 }
 int main()
 {
 	int N,m;
-	cin>>N>>m;
+	cin>>N>>N>>m;
 	CNode *HEAD_A=new CNode[N+1];
 	CNode *HEAD_B=new CNode[N+1];
 	CNode *HEAD_C=new CNode[N+1];
+	CNode *HEAD_D=new CNode[N+1];
 	CrosLNode *Matrix_A=new CrosLNode[m];
 	CrosLNode *Matrix_B=new CrosLNode[m];
-	CrosLNode *Matrix_C=new CrosLNode[m];
+	//CrosLNode *Matrix_C=NULL;
+	//CrosLNode *Matrix_D=NULL;
 	HEAD_A[0].col=N;
 	HEAD_A[0].row=N;
+	HEAD_B[0].col=N;
+	HEAD_B[0].row=N;
+	HEAD_C[0].col=N;
+	HEAD_C[0].row=N;
+	HEAD_D[0].row=N;
+	HEAD_D[0].col=N;
 	CNode_init(HEAD_A);
-	/*
-	HEAD_A[1].next=NULL;
-	HEAD_A[1].right=&Matrix_A[0];
-	HEAD_A[1].down=&Matrix_A[0];
-	Matrix_A[0].col=1;
-	Matrix_A[0].row=1;
-	Matrix_A[0].val=10;
-	Matrix_A[0].down=NULL;
-	Matrix_A[0].right=NULL;
-	print_matrix(HEAD_A);
-	*/
+	CNode_init(HEAD_B);
+	CNode_init(HEAD_C);
+	CNode_init(HEAD_D);
 	for(int i=0;i<m;i++)
 	{
 		cin>>Matrix_A[i].row>>Matrix_A[i].col>>Matrix_A[i].val;
 		Matrix_A[i].right=NULL;
 		Matrix_A[i].down=NULL;
+		build_list(HEAD_A,Matrix_A[i]);
 	}
-	build_list(HEAD_A,Matrix_A,m);
-	print_matrix(HEAD_A);
+	matrix_transpose(HEAD_A,HEAD_B);
+	print_matrix(HEAD_B);
+	cout<<endl;
+	matrix_add(HEAD_A,HEAD_B,HEAD_C);
+	print_matrix(HEAD_C);
+	cout<<endl;
+	matrix_dot(HEAD_A,HEAD_B,HEAD_D);
+	print_matrix(HEAD_D);
+	//delete_matrix(HEAD_A);
+//	delete_matrix(HEAD_B);
+	//delete [] HEAD_A;
+	//delete [] HEAD_B;
 	return 0;
 }
 	
