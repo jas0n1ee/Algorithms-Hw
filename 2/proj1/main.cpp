@@ -115,18 +115,16 @@ void delete_matrix(CNode *head)
 	for(int i=1;i<N+1;i++)
 	{
 		t=head[i].right;
-		/*
 		while(t!=NULL)
 		{
 			d=t;
 			t=(*t).right;
 			(*d).right=NULL;
 			(*d).down=NULL;
-			delete d;
+			free( d);
 		}
 		head[i].right=NULL;
-		*/
-		delete_list(head);
+		//delete_list(head);
 	}
 	for(int i=1;i<N+1;i++) head[i].down=NULL;
 }
@@ -252,10 +250,10 @@ int main()
 	print_matrix(HEAD_C);
 	matrix_dot(HEAD_A,HEAD_B,HEAD_D);
 	print_matrix(HEAD_D);
-	//delete_matrix(HEAD_A);
+//	delete_matrix(HEAD_A);
 //	delete_matrix(HEAD_B);
-	//delete [] HEAD_A;
-	//delete [] HEAD_B;
+	delete [] HEAD_A;
+	delete [] HEAD_B;
 	return 0;
 }
 	
