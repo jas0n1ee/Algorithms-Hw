@@ -197,6 +197,54 @@ void matrix_dot(CNode *A,CNode*B,CNode *C)
 		}
 	}
 }
+void matrix_fast_add(CNode *A,CNode *B,CNode *C)
+{
+	int N=A[0].col;
+	CrosLNode *row;
+	CrosLNode *row2;
+	int flag=0;
+	for(int i=1;i<N+1;i++)
+	{
+		row=A[i].right;
+		while(row!=NULL)
+		{
+			row2=B[i].right;
+			flag=0;
+			while(row2!=NULL)
+			{
+				if ((*row).col==(*row2).col)
+				{
+					if(((*row).val+(*row2).val)!=0) build_list(C,*new_matrix(i-1,(*row).col,(*row).val+(*row2).val));
+					flag=1;
+					break;
+				}
+				else row2=(*row2).right;
+			}
+			if(flag==0) build_list(C,*new_matrix(i-1,(*row).col,(*row).val));
+			row=(*row).right;
+		}
+	}
+	for(int i=1;i<N+1;i++)
+	{
+		row=B[i].right;
+		while(row!=NULL)
+		{
+			row2=A[i].right;
+			flag=0;
+			while(row2!=NULL)
+			{
+				if ((*row).col==(*row2).col)
+				{
+					flag=1;
+					break;
+				}
+				else row2=(*row2).right;
+			}
+			if(flag==0) build_list(C,*new_matrix(i-1,(*row).col,(*row).val));
+			row=(*row).right;
+		}
+	}
+}
 void print_full_matrix(CNode *t)
 {
 	int N=(*t).col;
@@ -246,7 +294,7 @@ int main()
 	}
 	matrix_transpose(HEAD_A,HEAD_B);
 	print_matrix(HEAD_B);
-	matrix_add(HEAD_A,HEAD_B,HEAD_C);
+	matrix_fast_add(HEAD_A,HEAD_B,HEAD_C);
 	print_matrix(HEAD_C);
 	matrix_dot(HEAD_A,HEAD_B,HEAD_D);
 	print_matrix(HEAD_D);
