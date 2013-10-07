@@ -52,67 +52,39 @@ void build_list(CNode *t,CrosLNode &x)
 {
 	int N=t[0].col;
 	int row=x.row,col=x.col;
-	if(t[row+1].right==NULL) 
+	CrosLNode *point=t[row+1].right;
+	if(t[row+1].right==NULL||(*t[row+1].right).col>col)
 	{
+		x.right=t[row+1].right;
 		t[row+1].right=&x;
-		x.right=NULL;
 	}
-	else 
+	else
+	while(point!=NULL)
 	{
-		CrosLNode *point=t[row+1].right;
-		if((*point).col>col) 
+		if((*point).right==NULL||(*(*point).right).col>col)
 		{
-			x.right=point;
-			t[row+1].right=&x;
+			x.right=(*point).right;
+			(*point).right=&x;
+			break;
 		}
-		else
-			do
-			{
-				if((*point).right==NULL) 
-				{
-					(*point).right=&x;
-					x.right=NULL;
-					break;
-				}
-				else if((*(*point).right).col>col)  
-				{
-					x.right=(*point).right;
-					(*point).right=&x;
-					break;
-				}
-				point=(*point).right;
-			}while((*point).right!=NULL);
+		else point=(*point).right;
 	}
-	if(t[col+1].down==NULL) 
+	point=t[col+1].down;
+	if(t[col+1].down==NULL||(*t[col+1].down).row>row)
 	{
+		x.down=t[col+1].down;
 		t[col+1].down=&x;
-		x.down=NULL;
 	}
-	else 
+	else
+	while(point!=NULL)
 	{
-		CrosLNode *point=t[col+1].down;
-		if((*point).row>row) 
+		if((*point).down==NULL||(*(*point).down).row>row)
 		{
-			x.down=point;
-			t[col+1].down=&x;
+			x.down=(*point).down;
+			(*point).down=&x;
+			break;
 		}
-		else
-			do
-			{
-				if((*point).down==NULL) 
-				{
-					(*point).down=&x;
-					x.down=NULL;
-					break;
-				}
-				else if((*(*point).down).row>row)  
-				{
-					x.down=(*point).down;
-					(*point).down=&x;
-					break;
-				}
-				point=(*point).down;
-			}while((*point).down!=NULL);
+		else point=(*point).down;
 	}
 }
 CrosLNode * new_matrix(int row,int col,int val)
@@ -201,15 +173,17 @@ void matrix_add(CNode *A, CNode *B, CNode *C)
 void matrix_dot(CNode *A,CNode*B,CNode *C)
 {
 	int N=A[0].col;
+	CrosLNode *row;
+	CrosLNode *col;
 	for(int i=1;i<N+1;i++)
 	{
 		for(int j=1;j<N+1;j++)
 		{
 			int t=0;
-			CrosLNode *row=A[i].right;
-			CrosLNode *col=B[j].down;
+			row=A[i].right;
 			while(row!=NULL)
 			{
+				col=B[j].down;
 				while(col!=NULL)
 				{
 					if ((*row).col==(*col).row)
@@ -220,10 +194,27 @@ void matrix_dot(CNode *A,CNode*B,CNode *C)
 					else col=(*col).down;
 				}
 				row=(*row).right;
-				col=B[j].down;
 			}
 			if(t!=0) build_list(C,*new_matrix(i-1,j-1,t));
 		}
+	}
+}
+void print_full_matrix(CNode *t)
+{
+	int N=(*t).col;
+	CrosLNode *point;
+	for(int i=1;i<N+1;i++)
+	{
+		point=t[i].right;
+		int r=-1;
+		while(point != NULL)
+		{
+			for(int j=0;j<(*point).col-r-1;j++) cout<<"0 ";
+			cout<<(*point).val<<" ";
+			r=(*point).col;
+			point=(*point).right;
+		}
+		cout<<endl;
 	}
 }
 int main()
@@ -236,8 +227,6 @@ int main()
 	CNode *HEAD_D=new CNode[N+1];
 	CrosLNode *Matrix_A=new CrosLNode[m];
 	CrosLNode *Matrix_B=new CrosLNode[m];
-	//CrosLNode *Matrix_C=NULL;
-	//CrosLNode *Matrix_D=NULL;
 	HEAD_A[0].col=N;
 	HEAD_A[0].row=N;
 	HEAD_B[0].col=N;
@@ -259,10 +248,8 @@ int main()
 	}
 	matrix_transpose(HEAD_A,HEAD_B);
 	print_matrix(HEAD_B);
-	cout<<endl;
 	matrix_add(HEAD_A,HEAD_B,HEAD_C);
 	print_matrix(HEAD_C);
-	cout<<endl;
 	matrix_dot(HEAD_A,HEAD_B,HEAD_D);
 	print_matrix(HEAD_D);
 	//delete_matrix(HEAD_A);
