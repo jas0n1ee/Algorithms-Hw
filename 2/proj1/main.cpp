@@ -89,7 +89,7 @@ void build_list(CNode *t,CrosLNode &x)
 }
 CrosLNode * new_matrix(int row,int col,int val)
 {
-	CrosLNode *t=new CrosLNode;
+	CrosLNode *t=new CrosLNode();
 	(*t).row=row;
 	(*t).col=col;
 	(*t).val=val;
@@ -97,36 +97,22 @@ CrosLNode * new_matrix(int row,int col,int val)
 	(*t).down=NULL;
 	return t;
 }
-void delete_list(CNode *head)
-{
-	if((*head).right==NULL) return;
-	else 
-	{
-		(*head).right=((*(*head).right)).right;
-		delete (*head).right;
-	}
-	delete_list(head);
-}
-void delete_matrix(CNode *head)
+void del_matrix(CNode *head)
 {
 	int N=head[0].col;
+	for(int i=1;i<N+1;i++) head[i].down=NULL;
 	CrosLNode *t=NULL;
-	CrosLNode *d=NULL;
 	for(int i=1;i<N+1;i++)
 	{
-		t=head[i].right;
-		while(t!=NULL)
+		while(head[i].right!=NULL)
 		{
-			d=t;
-			t=(*t).right;
-			(*d).right=NULL;
-			(*d).down=NULL;
-			free( d);
+			t=head[i].right;
+			head[i].right=(*t).right ;
+			delete t;
+			
 		}
 		head[i].right=NULL;
-		//delete_list(head);
 	}
-	for(int i=1;i<N+1;i++) head[i].down=NULL;
 }
 void matrix_transpose(CNode *s,CNode *d)
 {
@@ -272,7 +258,6 @@ int main()
 	CNode *HEAD_C=new CNode[N+1];
 	CNode *HEAD_D=new CNode[N+1];
 	CrosLNode *Matrix_A=new CrosLNode[m];
-	CrosLNode *Matrix_B=new CrosLNode[m];
 	HEAD_A[0].col=N;
 	HEAD_A[0].row=N;
 	HEAD_B[0].col=N;
@@ -290,7 +275,7 @@ int main()
 		cin>>Matrix_A[i].row>>Matrix_A[i].col>>Matrix_A[i].val;
 		Matrix_A[i].right=NULL;
 		Matrix_A[i].down=NULL;
-		build_list(HEAD_A,Matrix_A[i]);
+		build_list(HEAD_A,*new_matrix(Matrix_A[i].row,Matrix_A[i].col,Matrix_A[i].val));
 	}
 	matrix_transpose(HEAD_A,HEAD_B);
 	print_matrix(HEAD_B);
@@ -298,10 +283,14 @@ int main()
 	print_matrix(HEAD_C);
 	matrix_dot(HEAD_A,HEAD_B,HEAD_D);
 	print_matrix(HEAD_D);
-//	delete_matrix(HEAD_A);
-//	delete_matrix(HEAD_B);
+	del_matrix(HEAD_A);
+	del_matrix(HEAD_B);
+	del_matrix(HEAD_C);
+	del_matrix(HEAD_D);
 	delete [] HEAD_A;
 	delete [] HEAD_B;
+	delete [] HEAD_C;
+	delete [] HEAD_D;
 	return 0;
 }
 	
