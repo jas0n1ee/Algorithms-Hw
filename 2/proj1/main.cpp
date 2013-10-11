@@ -12,6 +12,7 @@ struct CNode
 	int row,col;
 	CNode *next;
 	CrosLNode *down, *right;
+	CrosLNode *down_last,*right_last;
 };
 void CNode_init(CNode *t)
 {
@@ -23,6 +24,8 @@ void CNode_init(CNode *t)
 		t[i].row=0;
 		t[i].right=NULL;
 		t[i].down=NULL;
+		t[i].down_last=NULL;
+		t[i].right_last=NULL;
 	}
 	t[0].next=&t[1];
 	t[N].next=NULL;
@@ -30,6 +33,8 @@ void CNode_init(CNode *t)
 	t[N].row=0;
 	t[N].right=NULL;
 	t[N].down=NULL;
+	t[N].down_last=NULL;
+	t[N].right_last=NULL;
 	return;
 }
 void print_matrix(CNode *t)
@@ -87,6 +92,36 @@ void build_list(CNode *t,CrosLNode &x)
 		else point=(*point).down;
 	}
 }
+void quick_insert(CNode *t,CrosLNode &x)
+{
+	int N=t[0].col;
+	int row=x.row,col=x.col;
+	if(t[row+1].right_last==NULL) 
+	{
+		t[row+1].right=&x;
+		t[row+1].right_last=&x;
+		x.right=NULL;
+	}
+	else 
+	{
+		(*t[row+1].right_last).right=&x;
+		t[row+1].right_last=&x;
+		x.right=NULL;
+	}
+
+	if(t[col+1].down_last==NULL) 
+	{
+		t[col+1].down=&x;
+		t[col+1].down_last=&x;
+		x.down=NULL;
+		}
+	else 
+	{
+		(*t[col+1].down_last).down=&x;
+		t[col+1].down_last=&x;
+		x.down=NULL;
+	}
+}
 CrosLNode * new_matrix(int row,int col,int val)
 {
 	CrosLNode *t=new CrosLNode();
@@ -123,7 +158,7 @@ void matrix_transpose(CNode *s,CNode *d)
 		point=s[i].right;
 		while(point!=NULL)
 		{
-			build_list(d,*new_matrix((*point).col,(*point).row,(*point).val));
+			quick_insert(d,*new_matrix((*point).col,(*point).row,(*point).val));
 			point=(*point).right;
 		}
 	}
@@ -179,7 +214,7 @@ void matrix_dot(CNode *A,CNode*B,CNode *C)
 				}
 				row=(*row).right;
 			}
-			if(t!=0) build_list(C,*new_matrix(i-1,j-1,t));
+			if(t!=0) quick_insert(C,*new_matrix(i-1,j-1,t));
 		}
 	}
 }
@@ -200,13 +235,13 @@ void matrix_fast_add(CNode *A,CNode *B,CNode *C)
 			{
 				if ((*row).col==(*row2).col)
 				{
-					if(((*row).val+(*row2).val)!=0) build_list(C,*new_matrix(i-1,(*row).col,(*row).val+(*row2).val));
+					if(((*row).val+(*row2).val)!=0) quick_insert(C,*new_matrix(i-1,(*row).col,(*row).val+(*row2).val));
 					flag=1;
 					break;
 				}
 				else row2=(*row2).right;
 			}
-			if(flag==0) build_list(C,*new_matrix(i-1,(*row).col,(*row).val));
+			if(flag==0) quick_insert(C,*new_matrix(i-1,(*row).col,(*row).val));
 			row=(*row).right;
 		}
 	}
@@ -279,7 +314,7 @@ int main()
 	}
 	matrix_transpose(HEAD_A,HEAD_B);
 	print_matrix(HEAD_B);
-	matrix_fast_add(HEAD_A,HEAD_B,HEAD_C);
+	matrix_add(HEAD_A,HEAD_B,HEAD_C);
 	print_matrix(HEAD_C);
 	matrix_dot(HEAD_A,HEAD_B,HEAD_D);
 	print_matrix(HEAD_D);
