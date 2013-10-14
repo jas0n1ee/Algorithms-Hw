@@ -218,6 +218,95 @@ void matrix_dot(CNode *A,CNode*B,CNode *C)
 		}
 	}
 }
+void matrix_quick_dot(CNode *A,CNode *B,CNode *C)
+{
+	int N=A[0].col;
+	CrosLNode *row;
+	CrosLNode *col;
+	for(int i=1;i<N+1;i++)
+	{
+		for(int j=1;j<N+1;j++)
+		{
+			int t=0;
+			row=A[i].right;
+			col=B[j].down;
+			while(row!=NULL&&col!=NULL)
+			{
+				
+				if((*row).col>(*col).row)
+				{
+					col=(*col).down;
+					continue;
+				}
+				if((*row).col<(*col).row) 
+				{
+					row=(*row).right;
+					continue;
+				}
+				if((*row).col==(*col).row) 
+				{
+					t+=(*row).val*(*col).val;
+					row=(*row).right;
+					col=(*col).down;
+				}
+			}
+			if(t!=0) quick_insert(C,*new_matrix(i-1,j-1,t));
+		}
+	}
+}
+void matrix_add_quick(CNode *A,CNode *B,CNode *C)
+{
+	int N=A[0].col;
+	CrosLNode *row;
+	CrosLNode *row2;
+	for(int i=1;i<N+1;i++)
+	{
+		row=A[i].right;
+		row2=B[i].right;	
+		while(row!=NULL||row2!=NULL)
+		{
+			if(row==NULL&&row2!=NULL)
+			{
+				quick_insert(C,*new_matrix(i-1,(*row2).col,(*row2).val));
+				row2=(*row2).right;
+				continue;
+			}
+			if(row2==NULL&&row!=NULL)
+			{
+				quick_insert(C,*new_matrix(i-1,(*row).col,(*row).val));
+				row=(*row).right;
+				continue;
+			}
+			if((*row).col>(*row2).col) 
+			{
+				quick_insert(C,*new_matrix(i-1,(*row2).col,(*row2).val));
+				row2=(*row2).right;
+				continue;
+			}
+			if((*row).col<(*row2).col) 
+			{
+				quick_insert(C,*new_matrix(i-1,(*row).col,(*row).val));
+				row=(*row).right;
+				continue;
+			}
+			if((*row).col==(*row2).col) 
+			{
+				if(((*row).val+(*row2).col)!=0)
+				{
+					quick_insert(C,*new_matrix(i-1,(*row).col,(*row).val+(*row2).val));
+					row=(*row).right;
+					row2=(*row2).right;
+				}
+				else
+				{
+					row=(*row).right;
+					row2=(*row2).right;
+				}
+			}
+		}
+	}
+	
+}
 void matrix_fast_add(CNode *A,CNode *B,CNode *C)
 {
 	int N=A[0].col;
@@ -314,9 +403,9 @@ int main()
 	}
 	matrix_transpose(HEAD_A,HEAD_B);
 	print_matrix(HEAD_B);
-	matrix_add(HEAD_A,HEAD_B,HEAD_C);
+	matrix_add_quick(HEAD_A,HEAD_B,HEAD_C);
 	print_matrix(HEAD_C);
-	matrix_dot(HEAD_A,HEAD_B,HEAD_D);
+	matrix_quick_dot(HEAD_A,HEAD_B,HEAD_D);
 	print_matrix(HEAD_D);
 	del_matrix(HEAD_A);
 	del_matrix(HEAD_B);
