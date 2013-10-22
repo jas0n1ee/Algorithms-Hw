@@ -4,11 +4,14 @@
 using namespace std;
 int main()
 {
-	int t[2];
 	int count=0;
 	char rout1[10]="r1.txt";
 	char rout2[10]="t1.txt";
 	fstream out("result.txt",ios::out|ios::trunc);
+	int b[6];
+	fstream in("short.txt",ios::in);
+	int i=1;
+	while(in>>b[i]){i++;};
 	for(int i=1;i<6;i++)
 	{
 		rout1[1]=i+48;
@@ -16,20 +19,20 @@ int main()
 		fstream r(rout1,ios::in);
 		fstream t(rout2,ios::in);
 		if(!(r&&t)) break;
-		
-		char **temp;
 		int m,n,s_x,s_y,e_x,e_y;
-		t>>m>>n>>s_x>>s_y>>e_x>>e_y; 
-		temp=new char*[m] ;
-		for(int j=0;j<m;j++) 
+		t>>m>>n>>s_x>>s_y>>e_x>>e_y;
+		int **temp=new int*[m];
+		t.get(); 
+		for(int j=0;j<m;j++)
 		{
-			temp[j]=new char(n+1);
-			t>>temp[j]; 
+			temp[j]=new int[n];
+			for(int k=0;k<n;k++) temp[j][k]=t.get();
+			t.get();
 		}
 		//read the maze from t1 
 		bool flag=0,flag1=0;
 		int x,y,ex,ey;	
-		int count =0;
+		int count =1;
 		if(r>>x&&r>>y) 
 		{
 			if(x==s_x&&y==s_y) out<<i<<": Start Point Correct\n";
@@ -53,6 +56,10 @@ int main()
 		else	 out<<i<<": Route Correct\n";
 		if(ex==e_x&&ey==e_y) out<<i<<": Stop Point Correct\n";
 		else  out<<i<<": Stop Point Wrong\n";
+		out<<i<<": "<<count-b[i]<<" steps \n";
+
+		for(int j=0;j<m;j++) delete [](temp[j]);
+		delete []temp;
 		r.close();
 		t.close();
 		out<<endl;

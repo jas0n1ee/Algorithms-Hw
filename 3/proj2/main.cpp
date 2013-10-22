@@ -24,6 +24,26 @@ void mark(int **maze,int x,int y)
 		return;
 	}
 	if(maze[x][y]>minlen) return;
+	if(x<e_x&&maze[x+1][y]!=1&&(maze[x+1][y]==0||maze[x+1][y]>maze[x][y]+1))
+	{
+		maze[x+1][y]=maze[x][y]+1;
+		mark(maze,x+1,y);
+	}
+	if(y<e_y&&maze[x][y+1]!=1&&(maze[x][y+1]==0||maze[x][y+1]>maze[x][y]+1))
+	{
+		maze[x][y+1]=maze[x][y]+1;
+		mark(maze,x,y+1);
+	}
+	if(x>e_x&&maze[x-1][y]!=1&&(maze[x-1][y]==0||maze[x-1][y]>maze[x][y]+1))
+	{
+		maze[x-1][y]=maze[x][y]+1;
+		mark(maze,x-1,y);
+	}
+	if(y>e_y&&maze[x][y-1]!=1&&(maze[x][y-1]==0||maze[x][y-1]>maze[x][y]+1))
+	{
+		maze[x][y-1]=maze[x][y]+1;
+		mark(maze,x,y-1);
+	}
 	if((maze[x+1][y]==1||maze[x+1][y]<=maze[x][y]+1)&&maze[x+1][y]!=0) ;
 	else 
 	{
@@ -58,9 +78,9 @@ void routit(int **maze,int x,int y,int *rx,int *ry)
 	else
 	{
 		if(maze[x-1][y]==N-1) routit(maze,x-1,y,rx,ry);
-		if(maze[x+1][y]==N-1) routit(maze,x+1,y,rx,ry);
-		if(maze[x][y+1]==N-1) routit(maze,x,y+1,rx,ry);
-		if(maze[x][y-1]==N-1) routit(maze,x,y-1,rx,ry);
+		else if(maze[x+1][y]==N-1) routit(maze,x+1,y,rx,ry);
+		else if(maze[x][y+1]==N-1) routit(maze,x,y+1,rx,ry);
+		else if(maze[x][y-1]==N-1) routit(maze,x,y-1,rx,ry);
 	}
 }
 		
