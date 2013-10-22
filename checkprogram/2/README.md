@@ -14,11 +14,12 @@ win8 64位系统可以直接执行`check.exe`
 		1: Stop Point 	Correct
 		1: 0 steps 
 前面的数字表示第几组测试数据  
-Start Point为起点，若起点不对则为Wrong  
-Data为你的结果是否在原迷宫中为‘0’的判断  有错误就为Wrong  
-Route为你的结果是否符合逻辑，两步之间的绝对值为1 有错误就为Wrong  
-Stop Point为终点是否正确的判断
-n steps为你的结果比最短路径多几步
+如果有`File Wrong`则表示读取文件错误  
+`Start Point`为起点，若起点不对则为`Wrong `   
+`Data`为你的结果是否在原迷宫中为`‘0’`的判断 有错误就为`Wrong `   
+`Route`为你的结果是否符合逻辑，两步之间的绝对值为`1 `有错误就为`Wrong `   
+`Stop Point`为终点是否正确的判断  
+`n steps`为你的结果比最短路径多几步
 
 -----
 
