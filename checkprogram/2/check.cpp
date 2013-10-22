@@ -35,8 +35,8 @@ int main()
 		int count =1;
 		if(r>>x&&r>>y) 
 		{
-			if(x==s_x&&y==s_y) out<<i<<": Start Point Correct\n";
-			else  out<<i<<": Start Point Wrong\n";
+			if(x==s_x&&y==s_y) out<<i<<": Start Point \tCorrect\n";
+			else  out<<i<<": Start Point \tWrong\n";
 		}
 		else out<<i<<": File Wrong\n";
 		ex=x;ey=y;
@@ -50,12 +50,12 @@ int main()
 			}
 			ex=x;ey=y;
 		}
-		if(flag1) out<<i<<": Data Wrong\n";
-		else	 out<<i<<": Data Correct\n";
-		if(flag) out<<i<<": Route Wrong\n";
-		else	 out<<i<<": Route Correct\n";
-		if(ex==e_x&&ey==e_y) out<<i<<": Stop Point Correct\n";
-		else  out<<i<<": Stop Point Wrong\n";
+		if(flag1) out<<i<<": Data \tWrong\n";
+		else	 out<<i<<": Data \tCorrect\n";
+		if(flag) out<<i<<": Route \tWrong\n";
+		else	 out<<i<<": Route \tCorrect\n";
+		if(ex==e_x&&ey==e_y) out<<i<<": Stop Point \tCorrect\n";
+		else  out<<i<<": Stop Point \tWrong\n";
 		out<<i<<": "<<count-b[i]<<" steps \n";
 
 		for(int j=0;j<m;j++) delete [](temp[j]);
