@@ -1,21 +1,34 @@
 #include<iostream>
 #include<fstream>
 #include<cmath>
+#include<cstdlib>
+#include<windows.h> 
 using namespace std;
 int main()
 {
+	SYSTEMTIME sys;
+	int min,sec,ms;
 	int count=0;
 	char rout1[10]="r1.txt";
 	char rout2[10]="t1.txt";
+	char com[26]="main.exe <t1.txt >r1.txt";
 	fstream out("result.txt",ios::out|ios::trunc);
 	int b[6];
 	fstream in("short.txt",ios::in);
 	int i=1;
 	while(in>>b[i]){i++;};
-	for(int i=1;i<6;i++)
+	for(int i=1;i<7;i++)
 	{
 		rout1[1]=i+48;
 		rout2[1]=i+48;
+		com[11]=i+48;
+		com[19]=i+48;
+		min=sys.wMinute;
+		sec=sys.wSecond;
+		ms=sys.wMilliseconds;
+		system(com) ;
+		//cout<<system(com); 
+		//cout<<sys.wMinute<<sys.wSecond-sec<<sys.wMilliseconds-ms<<endl;
 		fstream r(rout1,ios::in);
 		fstream t(rout2,ios::in);
 		if(!(r&&t)) break;
