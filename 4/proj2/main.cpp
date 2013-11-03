@@ -71,15 +71,19 @@ void mark(binode *t, int *l)
 		l[i]=0;
 		return;
 	}
-	else if(t->lchild!=NULL&&t->rchild!=NULL)
+	else if(t->lchild!=NULL&&t->rchild==NULL)
+	{
+		l[i]=1;
+		mark(t->lchild,l);
+	}
+	else if(t->lchild==NULL&&t->rchild!=NULL)
 	{
 		l[i]=2;
-		mark(t->lchild,l);
 		mark(t->rchild,l);
 	}
 	else
 	{
-		l[i]=1;
+		l[i]=3;
 		mark(t->lchild,l);
 		mark(t->rchild,l);
 	}
@@ -93,6 +97,7 @@ int main(int argc,char *argv[])
 	binode *p=new binode;
 	binode *c=new binode;
 	int temp;
+	int match[10];
 	if(in1>>temp) init(temp,p);
 	else cerr<<"error";
 	while(in1>>temp)
@@ -117,9 +122,6 @@ int main(int argc,char *argv[])
 	mark(p,par);
 	i=-1;
 	mark(c,child);
-	for(int j=0;j<p->sum;j++) cout<<par[j];
-	cout<<endl;
-	for(int i=0;i<c->sum;i++) cout<<child[i];
 
 	delete [] par;
 	delete [] child;
