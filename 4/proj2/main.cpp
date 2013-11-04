@@ -88,6 +88,92 @@ void mark(binode *t, int *l)
 		mark(t->rchild,l);
 	}
 }
+void Next(int *p,int *n,int m)
+{
+	n[0]=0;
+	int i=1,j=0;
+	while(i<m)
+	{
+		if(p[i]==p[j])
+		{
+			n[i]=j+1;
+			i++;
+			j++;
+		}
+		else if(j>0) j=n[j-1];
+		else
+		{
+			n[i++]=0;
+		}
+	}
+}
+int kmp_match(int *t,int *p,int m,int n,int *r)
+{
+	int i=0,j=0,k=0;
+	int *nxt=new int [n];
+	Next(p,nxt,n);
+	while(i<m)
+	{
+		if(t[i]==p[j])
+		{
+			if(j==n-1) 
+			{
+				r[k]=i-j;
+				k++;
+				i++;
+				j=0;
+			}
+			else
+			{
+				i++;j++;
+			}
+		}
+		else
+		{
+			if(j>0) j=nxt[j-1];
+			else i++;
+		}
+	}
+	delete [] nxt;
+	return k;
+}
+void magic(binode *t,int * match,int k)
+{
+	if(i==k) return;
+	s_max++;
+	if(match[i]==s_max)
+	{
+		match[i]=stage;
+		i++;
+	}
+	stage++;
+	if(t->lchild!=NULL) magic(t->lchild,match,k);
+	if(t->rchild!=NULL) magic(t->rchild,match,k);
+	stage--;
+}
+void swap(int &x,int &y)
+{
+	int t=x;
+	x=y;
+	y=t;
+}
+void bubble(int *match,int k)
+{
+	int flag=1;
+	for(int j=0;j<k;j++)
+	{
+		flag=1;
+		for(int m=0;m<k-1;m++)
+		{
+			if(match[m]>match[m+1])
+			{
+				flag =0;
+				swap(match[m],match[m+1]);
+			}
+		}
+		if(flag) break;
+	}
+}
 
 int main(int argc,char *argv[])
 {
@@ -97,7 +183,7 @@ int main(int argc,char *argv[])
 	binode *p=new binode;
 	binode *c=new binode;
 	int temp;
-	int match[10];
+	int *match;
 	if(in1>>temp) init(temp,p);
 	else cerr<<"error";
 	while(in1>>temp)
@@ -118,11 +204,24 @@ int main(int argc,char *argv[])
 		if(stage>s_max) s_max=stage;
 	}
 	int *child=new int[c->sum];
-	
+	match = new int[p->sum];
 	mark(p,par);
 	i=-1;
 	mark(c,child);
-
+	int k=kmp_match(par,child,p->sum,c->sum,match);
+	if(k) 
+	{
+		s_max=-1;
+		i=0;
+		stage=1;
+		magic(p,match,k);
+		bubble(match,k);
+		out<<"YES\n";
+		out<<k<<endl;
+		for(int j=0;j<k;j++) out<<match[j]<<endl;
+	}
+	else out<<"NO";
+	delete [] match;
 	delete [] par;
 	delete [] child;
 	delete_tree(p);
