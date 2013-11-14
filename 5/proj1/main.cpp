@@ -1,6 +1,10 @@
 #include<iostream>
 using namespace std;
 static int m,n;
+int *DFN,*STACK,*Low,*visit,*instack;
+int index=-1;
+int top=-1;
+int cnt=0;
 struct node
 {
 	int index;
@@ -11,10 +15,66 @@ int min(int x,int y)
 	if(x==0||x>y) return y;
 	else return x;
 }
-bool s_connect(int **maze)
+void tarjan(int **matrix,int u)
+{
+	int v;
+	DFN[u]=Low[u]=++index;
+	instack[u]=1;
+	STACK[++top]=u;
+	if(top>=m+1) cerr<<"ERROR!!!!!";
+	for(int i=0;i<m;i++)
+	{
+		if(matrix[u][i]!=0)
+		{
+			if(!DFN[i])
+			{
+				tarjan(matrix,i);
+				Low[u]=(Low[u]>Low[i])?Low[i]:Low[u];
+			}
+			else if(instack[u])
+				Low[u]=(Low[u]>Low[i])?Low[i]:Low[u];
+		}
+	}
+	if (DFN[u] == Low[u])
+	do
+	{
+		v=STACK[top--];
+		instack[v]=0;
+	}while(u!=v);
+	cnt++;	
+	
+}
+bool s_connect(int **matrix)
 {
 	if(n<m) return 0;
-	else return 1;
+	else 
+	{
+		DFN = new int[m+2];
+		Low = new int[m+2];
+		STACK = new int[m+2];
+		instack = new int[m+2];
+		for (int i=0; i<m; i++)
+		{
+			DFN[i] = 0;
+			Low[i] = 0;
+			STACK[i] = 0;
+			instack[i] = false;
+		}
+		top = 0;
+		cnt = 0;
+		index = 0;
+		for (int i = 0; i<m; i++)
+		{
+			if (!DFN[i])
+				tarjan(matrix,i);
+		}
+		delete []DFN;
+		delete []Low;
+		delete []instack;
+		delete []STACK;
+		if (cnt) return 1;
+		else return 0;
+	}
 }
 void floyd(int **matrix)
 {
@@ -84,13 +144,14 @@ int main()
 		case 0:
 			if(s_connect(matrix))
 			{
-				cout<<"1\n";
+				cout<<"1\n\n";
 				floyd(matrix);
 				for(int i=0;i<m;i++)
 				{
 					for(int j=0;j<m;j++) cout<<matrix[i][j]<<" ";
 					cout<<endl;
 				}
+				cout<<endl;
 				short_rout(matrix,back,tar_x,tar_y);
 				cout<<tar_y;
 			}

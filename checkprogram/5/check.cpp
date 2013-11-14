@@ -10,7 +10,7 @@ int main()
 	char rout3[10]="i1.txt";
 	char com[26]="main.exe <i1.txt >r1.txt";
 	fstream out("result.txt",ios::out|ios::trunc);
-	for(int i=1;i<5;i++)
+	for(int i=1;i<10;i++)
 	{
 		rout1[1]=i+48;
 		rout2[1]=i+48;
