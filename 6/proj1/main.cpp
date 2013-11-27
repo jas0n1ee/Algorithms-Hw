@@ -212,6 +212,9 @@ int main(int argc,char *argv[])
 		addchild_id(num,temp);
 		addchild_sum(sco,temp);
 	}
+	outbitree(num,out_num);
+	outbitree(sco,out_sco);
+	outbitree2(sco,out_ser);
 	while(in2>>temp.id)
 	{
 		in2>>temp.math>>temp.chinese;
@@ -223,9 +226,6 @@ int main(int argc,char *argv[])
 		in3>>temp.math>>temp.chinese;
 		del(sco,temp);
 	}
-	outbitree(num,out_num);
-	outbitree(sco,out_sco);
-	outbitree2(sco,out_ser);
 	outbitree(num,out_upd);
 	outbitree(sco,out_del);
 	delete_tree(num);
