@@ -22,11 +22,11 @@ float sorted_float(int N)
 		else
 		{
 			b|=0x80000000;
-			N=-N-1;
+			N=-N;
 		}
 		unsigned int t1,t2;
-		t1=N%8388607;
-		t2=N/8388607+1;
+		t1=(N-1)%8388607;
+		t2=(N-1)/8388607+1;
 		if(t2>=255)
 		{
 			t2=255;
