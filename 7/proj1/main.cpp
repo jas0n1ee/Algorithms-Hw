@@ -47,7 +47,8 @@ void quadratic_solution(double a,double b,double c,double *roots)
 	b/=max;
 	c/=max;
 	delta=b*b-4*a*c;
-	if (abs(delta)<sorted_float(1)) roots[0]=roots[1]=-b/(2*a);
+	if (abs(delta)==0) roots[0]=roots[1]=-b/(2*a);
+	//if (abs(delta)<sorted_float(1)) roots[0]=roots[1]=-b/(2*a);
 	else if(delta<=0) 
 	{
 		roots[0]=0;
