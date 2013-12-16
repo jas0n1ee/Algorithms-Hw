@@ -129,60 +129,6 @@ void del(binode *t,data stu)
 	binode *child;
 	binode *temp;
 	if(t==NULL) return;
-	if(t->lchild==NULL&&t->rchild==NULL) return;
-	if(t->lchild!=NULL&&strcmp(t->lchild->stu.id,stu.id)==0&&t->lchild->stu.math==stu.math&&t->lchild->stu.chinese==stu.chinese)
-	{
-		child=t->lchild;
-		t->lchild=child->lchild;
-		child->lchild=NULL;
-		if(t->lchild!=NULL)
-		{
-			temp=t->lchild->rchild;
-			if(temp==NULL)
-			{
-				t->lchild->rchild=child->rchild;
-			}
-			else
-			{
-				while(temp->rchild!=NULL){temp=temp->rchild;}
-				temp->rchild=child->rchild;
-			}
-			child->rchild=NULL;
-			delete child;
-		}
-		else
-		{
-			t->lchild=child->rchild;
-			child->rchild=NULL;
-			delete child;
-		}
-	}
-	else if(t->rchild!=NULL&&strcmp(t->rchild->stu.id,stu.id)==0&&t->rchild->stu.math==stu.math&&t->rchild->stu.chinese==stu.chinese)
-	{
-		child=t->rchild;
-		t->rchild=child->rchild;
-		child->rchild=NULL;
-		if(t->rchild!=NULL)
-		{
-			temp=t->rchild->lchild;
-			if(temp==NULL) t->rchild->lchild=child->lchild;
-			else
-			{
-				while(temp->lchild!=NULL){temp=temp->lchild;}
-				temp->lchild=child->lchild;
-			}
-			child->lchild=NULL;
-			delete child;
-			return;
-		}
-		else
-		{
-			t->rchild=child->lchild;
-			child->lchild=NULL;
-			delete child;
-			return;
-		}
-	}
 	else
 	{
 		del(t->lchild,stu);
