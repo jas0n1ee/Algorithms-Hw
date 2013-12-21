@@ -1,4 +1,5 @@
 #include<iostream>
+#include<fstream>
 using namespace std;
 static int N;
 static int *arr;
@@ -31,7 +32,6 @@ int LIS(int *t)
 		else pre[i]=-1;
 		if(j+1>k) k++;
 	}
-	cout<<k<<endl;
 	j=M[k-1];
 	for(int i=k-1;i>=0&&j!=-1;i--)
 	{
@@ -40,17 +40,20 @@ int LIS(int *t)
 	}
 	return k;
 }
-int main()
+int main(int argc,char *argv[])
 {
-	cin>>N;
+	fstream in(argv[1],ios::in);
+	fstream out(argv[2],ios::out|ios::trunc);
+	in>>N;
 	arr=new int[N];
 	M=new int[N];
 	L=new int[N];
 	pre=new int[N];
 	int *t=new int [N];
-	for(int i=0;i<N;i++) cin>>arr[i];
+	for(int i=0;i<N;i++) in>>arr[i];
 	int m=LIS(t);
-	for(int i=0;i<m;i++) cout<<t[i]<<" ";
+	out<<m<<endl;
+	for(int i=0;i<m;i++) out<<t[i]<<" ";
 	delete []arr;
 	delete []M;
 }
