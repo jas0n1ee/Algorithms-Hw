@@ -20,7 +20,7 @@ int sum_sr()
 	return board[0][2]+board[1][1]+board[2][0];
 }
 
-int check(int &x,int &y)
+int check(int *x,int *y)
 {
 	int emy=0;
 	int my=0;
@@ -51,12 +51,12 @@ int check(int &x,int &y)
 		if(sum_sl()==EMY_CHECK) 
 		{
 			emy=1;
-			for(int j=0;j<3;j++) if(board[j][j]==0) {emy_x=emy_y=j;};
+			for(int j=0;j<3;j++) if(board[j][j]==0) {emy_x=j; emy_y=j;};
 		}
 		if(sum_sl()==MY_CHECK) 
 		{
 			my=1;
-			for(int j=0;j<3;j++) if(board[j][j]==0) {my_x=my_y=j;};
+			for(int j=0;j<3;j++) if(board[j][j]==0) {my_x=j; my_y=j;};
 		}
 		if(sum_sr()==EMY_CHECK) 
 		{
@@ -69,8 +69,9 @@ int check(int &x,int &y)
 			for(int j=0;j<3;j++) if(board[j][2-j]==0) {my_x=j; my_y=2-j;}
 		}
 	}
-	if(my) {x=my_x;y=my_y;}
-	else if(emy) {x=emy_x;y=emy_y;}
+	if(my) {*x=my_x;*y=my_y;}
+	else if(emy) {*x=emy_x;*y=emy_y;}
+	//cout<<*x<<endl<<*y<<endl;
 	return emy+2*my;
 }
 void p_board()
@@ -86,10 +87,10 @@ void p_board()
 		cout<<endl;
 	}
 }
+
 int main(int argc,char*argv[])
 {
 	for(int i=0;i<9;i++) board[i/3][i%3]=*argv[i+1];
-	p_board();
 	int x,y;
-	cout<<check(x,y);
+	if(check(&x,&y)>0) cout<<x<<" "<<y<<endl;
 }
