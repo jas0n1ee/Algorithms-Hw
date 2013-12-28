@@ -79,7 +79,7 @@ int check(int *x,int *y)
 	
 	if(my) {*x=my_x;*y=my_y;}
 	else if(emy) {*x=emy_x;*y=emy_y;}
-	if(sum_e>=2) return -1;
+	if(!my&&!emy&&sum_e>=2) return -1;
 	else return emy+2*my;
 }
 void p_board()
