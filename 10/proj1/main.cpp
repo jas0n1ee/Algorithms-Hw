@@ -55,7 +55,6 @@ int check(int *x,int *y)
 			my=1;
 			for(int j=0;j<3;j++) if(board[j][i]==0) {my_y=i; my_x=j;sum_m++;}
 		}
-		
 	}
 	if(sum_sl()==EMY_CHECK) 
 	{
@@ -77,9 +76,11 @@ int check(int *x,int *y)
 		my=1;
 		for(int j=0;j<3;j++) if(board[j][2-j]==0) {my_x=j; my_y=2-j;sum_m++;}
 	}
+	
 	if(my) {*x=my_x;*y=my_y;}
 	else if(emy) {*x=emy_x;*y=emy_y;}
-	return emy+2*my;
+	if(sum_e>=2) return -1;
+	else return emy+2*my;
 }
 void p_board()
 {
@@ -110,7 +111,8 @@ int strategy()
 			{
 				board[i/3][i%3]='o';
 				status=check(&x,&y);
-				if(status>0) result=y+3*x;
+				if(status==-1) return i;
+				else if(status>0) result=y+3*x;
 				board[i/3][i%3]=0;
 			}
 		}
