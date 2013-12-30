@@ -1,8 +1,8 @@
 #include<iostream>
 using namespace std;
-#define EMY_CHECK 'o'+'o'
-#define MY_CHECK 'x'+'x'
-#define init_board  'o'
+#define MY_CHECK 'o'+'o'
+#define EMY_CHECK 'x'+'x'
+#define init_board  'x'
 int board[3][3];
 int sum_r(int x)
 {
@@ -79,7 +79,8 @@ int check(int *x,int *y)
 	
 	if(my) {*x=my_x;*y=my_y;}
 	else if(emy) {*x=emy_x;*y=emy_y;}
-	if(!my&&!emy&&sum_e>=2) return -1;
+	if(!my&&sum_e>=2) return -1;
+	else if(!emy&&sum_m>=2) return -2;
 	else return emy+2*my;
 }
 void p_board()
@@ -103,15 +104,15 @@ int strategy()
 	if(status>0) return y+3*x;
 	else
 	{
-		if(sum_total()==init_board&&board[1][1]=='o') return 2;
+		if(sum_total()==init_board&&board[1][1]=='x') return 2;
 		else if(sum_total()==init_board) return 4;
 		for(int i=0;i<9;i++)
 		{
 			if(board[i/3][i%3]==0) 
 			{
-				board[i/3][i%3]='o';
+				board[i/3][i%3]='x';
 				status=check(&x,&y);
-				if(status==-1) return i;
+				if(status==-1) result=y+3*x;
 				else if(status>0) result=y+3*x;
 				board[i/3][i%3]=0;
 			}
@@ -119,7 +120,19 @@ int strategy()
 		if(result==-1)
 		{
 			for(int i=0;i<9;i++)
-			if(board[i/3][i%3]==0) result=i;
+			{
+				if(board[i/3][i%3]==0) 
+				{
+					board[i/3][i%3]='o';
+					status=check(&x,&y);
+					if(status==-2) return i;
+					else if(status>0) result=i;
+					board[i/3][i%3]=0;
+				}
+			}
+			if(result==-1)
+				for(int i=0;i<0;i++)
+					if(board[i/3][i%3]==0) result=i;
 		}
 		return result;
 	}
@@ -136,9 +149,9 @@ int main(int argc,char*argv[])
 	p_board();
 	cout<<x<<endl<<y<<endl;
 	int result=strategy();
-	cout<<result<<endl;
+	cout<<result+1<<endl;
 
 
-	board[result/3][result%3]='x';
+	board[result/3][result%3]='o';
 	p_board();
 }
