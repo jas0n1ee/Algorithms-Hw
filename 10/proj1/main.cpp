@@ -1,4 +1,5 @@
 #include<iostream>
+#include<cmath>
 using namespace std;
 #define MY_CHECK 'o'+'o'
 #define EMY_CHECK 'x'+'x'
@@ -100,6 +101,8 @@ int strategy()
 {
 	int x,y;
 	int status=check(&x,&y);
+	int choice[2][3];
+	choice[0][0]=choice[1][0]=0;
 	int result=-1;
 	if(status>0) return y+3*x;
 	else
@@ -110,29 +113,37 @@ int strategy()
 		{
 			if(board[i/3][i%3]==0) 
 			{
+				board[i/3][i%3]='o';
+				status=check(&x,&y);
+				if(status==-2) 
+				{
+					choice[0][0]=2;
+				}
+				else if(status>0) 
+				{
+					choice[0][0]=1;
+				}
 				board[i/3][i%3]='x';
 				status=check(&x,&y);
-				if(status==-1) result=y+3*x;
-				else if(status>0) result=y+3*x;
+				if(status==-1) 
+				{
+					choice[1][0]=-2;
+				}
+				else if(status>0) 
+				{
+					choice[1][0]=-1;
+				}
 				board[i/3][i%3]=0;
 			}
+			if(choice[0][0]==0&&choice[1][0]==0) result =-1;
+			else if(choice[0][0]!=2&&choice[1][0]==-2) result=x*3+y;
+			else result=i;
+			if(abs(choice[0][0])>=2||abs(choice[1][0])>=2||abs(choice[0][0]+choice[1][0])>=2)break;
 		}
+				
 		if(result==-1)
 		{
-			for(int i=0;i<9;i++)
-			{
-				if(board[i/3][i%3]==0) 
-				{
-					board[i/3][i%3]='o';
-					status=check(&x,&y);
-					if(status==-2) return i;
-					else if(status>0) result=i;
-					board[i/3][i%3]=0;
-				}
-			}
-			if(result==-1)
-				for(int i=0;i<0;i++)
-					if(board[i/3][i%3]==0) result=i;
+			for(int i=0;i<0;i++) if(board[i/3][i%3]==0) result=i;
 		}
 		return result;
 	}
@@ -146,12 +157,7 @@ int main(int argc,char*argv[])
 	}
 	int x,y;
 	check(&x,&y);
-	p_board();
-	cout<<x<<endl<<y<<endl;
 	int result=strategy();
 	cout<<result+1<<endl;
 
-
-	board[result/3][result%3]='o';
-	p_board();
 }
