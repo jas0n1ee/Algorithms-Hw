@@ -184,7 +184,6 @@ int strategy()
 	{
 		if(r[i]==max) 
 		{
-			cout<<max;
 			return i;
 		}
 	}
@@ -197,7 +196,5 @@ int main(int argc,char*argv[])
 		else board[i/3][i%3]=*argv[i+1];
 	}
 	rate=argv[10][0]*1+argv[10][2]*0.1+argv[10][3]*0.01-'0'*1.11;
-	cout<<gg()<<endl;
-	p_board();
-	cout<<endl<<strategy()+1<<endl;
+	cout<<strategy()+1<<endl;
 }

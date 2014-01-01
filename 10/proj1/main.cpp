@@ -159,5 +159,5 @@ int main(int argc,char*argv[])
 	check(&x,&y);
 	int result=strategy();
 	cout<<result+1<<endl;
-
+	return 0; 
 }
