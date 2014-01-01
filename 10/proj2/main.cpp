@@ -1,9 +1,13 @@
 #include<iostream>
 using namespace std;
-#define MY_CHECK 'o'+'o'+0
-#define EMY_CHECK 'x'+'x'+0
-#define init_board  0+'0'+'0'+'0'+'0'+'0'+'0'+'0'+'0'
+#define EMY_CHECK 'o'+'o'
+#define MY_CHECK 'x'+'x'
+#define init_board  0
+#define full_board 'o'+'x'+'o'+'x'+'o'+'x'+'o'+'x'+'x'
 int board[3][3];
+float rate=0;
+float my(int l);
+float emy(int l);
 int sum_r(int x)
 {
 	return board[x][0]+board[x][1]+board[x][2];
@@ -26,6 +30,28 @@ int sum_total()
 	int sum=0;
 	for(int i=0;i<9;i++) sum+=board[i/3][i%3];
 	return sum;
+}
+float gg()
+{
+	int result=0;
+	int sum;
+	for(int i=0;i<3;i++)
+	{
+		sum=sum_r(i);
+		if(sum==3*'x') return 1;
+		if(sum==3*'o') return 0;
+		sum=sum_c(i);
+		if(sum==3*'x') return 1;
+		if(sum==3*'o') return 0;
+	}
+	sum=sum_sr();
+	if(sum==3*'x') return 1;
+	if(sum==3*'o') return 0;
+	sum=sum_sl();
+	if(sum==3*'x') return 1;
+	if(sum==3*'o') return 0;
+	if(sum_total()==full_board) return rate;
+	else return -1;
 }
 int check(int *x,int *y)
 {
@@ -95,47 +121,83 @@ void p_board()
 		cout<<endl;
 	}
 }
-int strategy()
+float my(int l)
 {
-	int x,y;
-	int status=check(&x,&y);
-	int result=-1;
-	if(status>0) return y+3*x;
+	board[l/3][l%3]='x';
+	float r=gg();
+	if(r!=-1) 
+	{
+		board[l/3][l%3]=0;
+		return r;
+	}
 	else
 	{
-		if(sum_total()==init_board) return 4;
+		r=0;
 		for(int i=0;i<9;i++)
 		{
-			if(board[i/3][i%3]==0) 
+			if(board[i/3][i%3]==0)
 			{
-				board[i/3][i%3]='o';
-				status=check(&x,&y);
-				if(status>0) result=y+3*x;
-				board[i/3][i%3]=0;
+				r+=emy(i);
 			}
 		}
-		if(result==-1)
+		board[l/3][l%3]=0;
+		return r;
+	}
+
+}
+float emy(int l)
+{
+	board[l/3][l%3]='o';
+	float r=gg();
+	if(r!=-1) 
+	{
+		board[l/3][l%3]=0;
+		return r;
+	}
+	else
+	{
+		r=0;
+		for(int i=0;i<9;i++)
 		{
-			for(int i=0;i<9;i++)
-			if(board[i/3][i%3]==0) result=i;
+			if(board[i/3][i%3]==0)
+			{
+				r+=my(i);
+			}
 		}
-		return result;
+		board[l/3][l%3]=0;
+		return r;
+	}
+}
+int strategy()
+{
+	float r[9]={0};
+	float max=-1;
+	for(int i=0;i<9;i++)
+	{
+		if(board[i/3][i%3]==0)
+		{
+			r[i]=my(i);
+			if(r[i]>max) max=r[i];
+		}
+	}
+	for(int i=0;i<9;i++) 
+	{
+		if(r[i]==max) 
+		{
+			cout<<max;
+			return i;
+		}
 	}
 }
 int main(int argc,char*argv[])
 {
 	for(int i=0;i<9;i++) 
 	{
-		if(argv[i+1]=='0') board[i/3][i%3]=0;
+		if(*argv[i+1]=='0') board[i/3][i%3]=0;
 		else board[i/3][i%3]=*argv[i+1];
-	int x,y;
-	check(&x,&y);
+	}
+	rate=argv[10][0]*1+argv[10][2]*0.1+argv[10][3]*0.01-'0'*1.11;
+	cout<<gg()<<endl;
 	p_board();
-	cout<<x<<endl<<y<<endl;
-	int result=strategy();
-	cout<<result<<endl;
-
-
-	board[result/3][result%3]='o';
-	p_board();
+	cout<<endl<<strategy()+1<<endl;
 }
