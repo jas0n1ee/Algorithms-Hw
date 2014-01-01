@@ -111,6 +111,7 @@ int strategy()
 		else if(sum_total()==init_board) return 4;
 		for(int i=0;i<9;i++)
 		{
+			choice[0][0]=choice[1][0]=0;
 			if(board[i/3][i%3]==0) 
 			{
 				board[i/3][i%3]='o';
@@ -137,13 +138,13 @@ int strategy()
 			}
 			if(choice[0][0]==0&&choice[1][0]==0) result =-1;
 			else if(choice[0][0]!=2&&choice[1][0]==-2) result=x*3+y;
-			else result=i;
+			else if(choice[0][0]!=0||choice[1][0]!=0) result=i;
 			if(abs(choice[0][0])>=2||abs(choice[1][0])>=2||abs(choice[0][0]+choice[1][0])>=2)break;
 		}
 				
 		if(result==-1)
 		{
-			for(int i=0;i<0;i++) if(board[i/3][i%3]==0) result=i;
+			for(int i=0;i<9;i++) if(board[i/3][i%3]==0) result=i;
 		}
 		return result;
 	}
