@@ -137,8 +137,12 @@ int strategy()
 				board[i/3][i%3]=0;
 			}
 			if(choice[0][0]==0&&choice[1][0]==0) result =-1;
-			else if(choice[0][0]!=2&&choice[1][0]==-2) result=x*3+y;
-			else if(choice[0][0]!=0||choice[1][0]!=0) result=i;
+			else if(choice[0][0]!=2&&choice[1][0]==-2) 
+			{
+				if(board[i/3][1]=='x'&&board[1][i%3]=='x'&&board[i/3][i%3]==0) result=i;
+				else result=x*3+y;
+			}
+			else if(choice[0][0]!=0||choice[1][0]!=0) result=x*3+y;
 			if(abs(choice[0][0])>=2||abs(choice[1][0])>=2||abs(choice[0][0]+choice[1][0])>=2)break;
 		}
 				
