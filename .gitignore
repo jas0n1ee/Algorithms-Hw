@@ -1,4 +1,6 @@
+#c++
 *.exe
+*.o
 *~
 *.txt
 /2/proj1/vs/
@@ -15,3 +17,5 @@
 /8/proj1/main/
 /9/proj1/main/
 /10/proj1/main/
+makefile
+
