@@ -8,6 +8,11 @@ int board[3][3];
 float rate=0;
 float my(int l);
 float emy(int l);
+/*
+static int win=0;
+static int tie=0;
+static int lose=0;
+*/
 int sum_r(int x)
 {
 	return board[x][0]+board[x][1]+board[x][2];
@@ -53,61 +58,7 @@ float gg()
 	if(sum_total()==full_board) return rate;
 	else return -1;
 }
-int check(int *x,int *y)
-{
-	int emy=0;
-	int my=0;
-	int emy_x,emy_y,my_x,my_y;
-	int sum_e=0,sum_m=0;
-	for(int i=0;i<3;i++)
-	{
-		if(sum_r(i)==EMY_CHECK) 
-		{
-			emy=1;
-			for(int j=0;j<3;j++) if(board[i][j]==0) {emy_x=i; emy_y=j;sum_e++;}
-		}
-		if(sum_r(i)==MY_CHECK) 
-		{
-			my=1;
-			for(int j=0;j<3;j++) if(board[i][j]==0) {my_x=i; my_y=j;sum_m++;}
-		}
-		if(sum_c(i)==EMY_CHECK) 
-		{
-			emy=1;
-			for(int j=0;j<3;j++) if(board[j][i]==0) {emy_y=i; emy_x=j;sum_e++;}
-		}
-		if(sum_c(i)==MY_CHECK) 
-		{
-			my=1;
-			for(int j=0;j<3;j++) if(board[j][i]==0) {my_y=i; my_x=j;sum_m++;}
-		}
-	}
-	if(sum_sl()==EMY_CHECK) 
-	{
-		emy=1;
-		for(int j=0;j<3;j++) if(board[j][j]==0) {emy_x=j; emy_y=j;sum_e++;}
-	}
-	if(sum_sl()==MY_CHECK) 
-	{
-		my=1;
-		for(int j=0;j<3;j++) if(board[j][j]==0) {my_x=j; my_y=j;sum_m++;}
-	}
-	if(sum_sr()==EMY_CHECK) 
-	{
-		emy=1;
-		for(int j=0;j<3;j++) if(board[j][2-j]==0) {emy_x=j; emy_y=2-j;sum_e++;}
-	}
-	if(sum_sr()==MY_CHECK) 
-	{
-		my=1;
-		for(int j=0;j<3;j++) if(board[j][2-j]==0) {my_x=j; my_y=2-j;sum_m++;}
-	}
-	
-	if(my) {*x=my_x;*y=my_y;}
-	else if(emy) {*x=emy_x;*y=emy_y;}
-	if(!sum_e>=2) return 11;
-	else return emy+2*my;
-}
+
 void p_board()
 {
 	for(int i=0;i<3;i++)
@@ -120,13 +71,19 @@ void p_board()
 		}
 		cout<<endl;
 	}
+	cout<<endl;
 }
 float my(int l)
 {
+	float p=0;
+	for(int i=0;i<9;i++) if(board[i/3][i%3]==0) p++;
 	board[l/3][l%3]='x';
 	float r=gg();
 	if(r!=-1) 
 	{
+		//if(r==1) win++;
+		//if(r==rate) tie++;
+		//if(r==0) lose++;
 		board[l/3][l%3]=0;
 		return r;
 	}
@@ -137,7 +94,7 @@ float my(int l)
 		{
 			if(board[i/3][i%3]==0)
 			{
-				r+=emy(i);
+				r+=emy(i)/p;
 			}
 		}
 		board[l/3][l%3]=0;
@@ -147,10 +104,15 @@ float my(int l)
 }
 float emy(int l)
 {
+	float p=0;
+	for(int i=0;i<9;i++) if(board[i/3][i%3]==0) p++;
 	board[l/3][l%3]='o';
 	float r=gg();
 	if(r!=-1) 
 	{
+		//if(r==rate) tie++;
+		//if(r==1) win++;
+		//if(r==0) lose++;
 		board[l/3][l%3]=0;
 		return r;
 	}
@@ -161,7 +123,7 @@ float emy(int l)
 		{
 			if(board[i/3][i%3]==0)
 			{
-				r+=my(i);
+				r+=my(i)/p;
 			}
 		}
 		board[l/3][l%3]=0;
